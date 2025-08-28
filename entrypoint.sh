@@ -35,6 +35,7 @@ if [[ "$1" == "setup" ]]; then
     bun run build
 
     php artisan set:all_cache
+    redis-server --daemonize yes
     php artisan queue:restart
 fi
 if [[ "$1" == "debug" ]]; then
@@ -58,6 +59,16 @@ if [[ "$1" == "backup-mysql" ]]; then
 fi
 
 if [[ -z "$1" ]]; then
-    echo "Starting Nginx with /etc/nginx/conf.d/unit3d.conf..."
-    nginx -c /etc/nginx/conf.d/unit3d.conf
+    echo "Starting PHP Artisan server..."
+    redis-server --daemonize yes
+    sudo chown -R mysql:mysql /var/lib/mysql
+    sudo chmod -R 750 /var/lib/mysql
+    sudo chage -E -1 mysql
+    su -s /bin/bash mysql -c "mysqld &"
+    # Wait for MariaDB to be ready
+    until mysqladmin ping -h "localhost" --silent; do
+        echo "Waiting for MariaDB to be available..."
+        sleep 2
+    done
+    /usr/bin/php -d variables_order=EGPCS /var/www/html/artisan serve --host=0.0.0.0 --port=80
 fi

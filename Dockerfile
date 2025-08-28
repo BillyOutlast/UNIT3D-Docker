@@ -40,12 +40,12 @@ RUN npm install -g bun || npm update -g bun
 RUN sed -i '/^;zend_extension=opcache/s/^;//' /etc/php/php.ini \
     && sed -i '/^;extension=iconv/s/^;//' /etc/php/php.ini \
     && sed -i '/^;extension=bcmath/s/^;//' /etc/php/php.ini \
-    && sed -i '/^;extension=redis/s/^;//' /etc/php/php.ini \
-    && sed -i '/^extension=redis.so/s/^;//' /etc/php/php.ini \
     && sed -i '/^;extension=intl/s/^;//' /etc/php/php.ini \
     && sed -i '/^;extension=mysqli/s/^;//' /etc/php/php.ini \
     && sed -i '/^;extension=pdo_mysql/s/^;//' /etc/php/php.ini \
-    && sed -i '/^;extension=intl/s/^;//' /etc/php/php.ini
+    && sed -i '/^;extension=intl/s/^;//' /etc/php/php.ini \
+    && sed -i '/^;extension=redis/s/^;//' /etc/php/conf.d/redis.ini \
+    && sed -i '/^;extension=igbinary/s/^;//' /etc/php/conf.d/igbinary.ini
 
 
 # Expose necessary ports

@@ -4,13 +4,13 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "3306:3306"
-      - "6379:6379"
     restart: unless-stopped
     volumes:
       - ./UNIT3D:/var/www/html  
       - ./unit3d.conf:/etc/nginx/conf.d/unit3d.conf
-    env_file:
+      - ./mysql:/var/lib/mysql
+      - ./entrypoint.sh:/entrypoint.sh
+    env_file: 
       - .env
     entrypoint: /entrypoint.sh
 
@@ -30,6 +30,7 @@ services:
     image: unit3d:latest
     volumes:
       - ./UNIT3D:/var/www/html
+      - ./entrypoint.sh:/entrypoint.sh
     env_file:
       - .env
     entrypoint: /entrypoint.sh debug
@@ -39,7 +40,7 @@ services:
     volumes:
       - ./backup:/backup
       - ./mysql:/var/lib/mysql:ro
-        - ./UNIT3D:/var/www/html:ro
+      - ./UNIT3D:/var/www/html:ro
     env_file:
       - .env
     entrypoint: /entrypoint.sh backup-mysql
