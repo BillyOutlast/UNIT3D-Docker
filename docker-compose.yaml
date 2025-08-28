@@ -3,12 +3,30 @@ version: '3.8'
 services:
   unit3d:
     image: unit3d:latest
-    container_name: unit3d
-    env_file:
-      - env
     ports:
       - "80:80"
       - "443:443"
       - "3306:3306"
       - "6379:6379"
-    command: tail -f /dev/null
+    restart: unless-stopped
+    volumes:
+      - ./UNIT3D:/var/www/html
+    env_file:
+      - .env
+    entrypoint: /entrypoint.sh
+
+  unit3d-setup:
+    image: unit3d:latest
+    volumes:
+      - ./UNIT3D:/var/www/html
+    env_file:
+      - .env
+    entrypoint: /entrypoint.sh setup
+
+  unit3d-debug:
+    image: unit3d:latest
+    volumes:
+      - ./UNIT3D:/var/www/html
+    env_file:
+      - .env
+    entrypoint: /entrypoint.sh debug

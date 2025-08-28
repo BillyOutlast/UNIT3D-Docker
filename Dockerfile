@@ -12,7 +12,7 @@ RUN pacman -Sy --noconfirm archlinux-keyring \
     git \
     base-devel \
     mariadb \
-    redis \
+    valkey \
     nginx \
     php \
     php-fpm \
@@ -32,16 +32,6 @@ RUN pacman -Sy --noconfirm archlinux-keyring \
 # Set up MariaDB
 RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld
 
-
-# Clone UNIT3D repository
-WORKDIR /var/www
-RUN git clone https://github.com/HDInnovations/UNIT3D.git unit3d
-
-# Copy env file into UNIT3D directory
-COPY env /var/www/unit3d/.env
-
-WORKDIR /var/www/unit3d
-
 # Enable required PHP extensions
 RUN sed -i '/^;zend_extension=opcache/s/^;//' /etc/php/php.ini \
     && sed -i '/^;extension=iconv/s/^;//' /etc/php/php.ini \
@@ -52,21 +42,11 @@ RUN sed -i '/^;zend_extension=opcache/s/^;//' /etc/php/php.ini \
     && sed -i '/^;extension=pdo_mysql/s/^;//' /etc/php/php.ini \
     && sed -i '/^;extension=intl/s/^;//' /etc/php/php.ini
 
-# Install PHP dependencies
-RUN composer install --no-interaction --prefer-dist
+# Add entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
-# Install JS dependencies
-RUN yarn install
-
-# Install missing date-fns dependency
-RUN yarn add date-fns
-
-# Build the assets
-RUN yarn build
-
-# Application cache configuration
-RUN php artisan set:all_cache
-RUN php artisan queue:restart
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Expose necessary ports
 EXPOSE 80 443 3306 6379
