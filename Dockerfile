@@ -15,7 +15,6 @@ RUN pacman -Sy --noconfirm archlinux-keyring \
     valkey \
     nginx \
     python3 \
-    python-mysql-connector \
     php \
     php-fpm \
     php-gd \
@@ -33,6 +32,9 @@ RUN pacman -Sy --noconfirm archlinux-keyring \
 
 # Set up MariaDB
 RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld
+
+# Install bun globally using npm
+RUN npm install -g bun || npm update -g bun
 
 # Enable required PHP extensions
 RUN sed -i '/^;zend_extension=opcache/s/^;//' /etc/php/php.ini \

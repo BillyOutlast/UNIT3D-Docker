@@ -28,7 +28,6 @@ if [[ "$1" == "setup" ]]; then
         echo "Waiting for MariaDB to be available..."
         sleep 2
     done
-    tail -f /dev/null
     python3 /database-setup.py
     # Keep MariaDB running in the background
     php artisan migrate:fresh --seed

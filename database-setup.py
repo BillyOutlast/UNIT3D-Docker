@@ -1,5 +1,5 @@
 import os
-import mysql.connector
+import subprocess
 
 # Read .env file
 env_path = '/var/www/html/.env'
@@ -18,22 +18,29 @@ db_database = env_vars.get('DB_DATABASE')
 db_username = env_vars.get('DB_USERNAME')
 db_password = env_vars.get('DB_PASSWORD')
 
-if db_connection != 'mysql':
-    print("Only MySQL is supported.")
-    exit(1)
+# Create database and user
+mysql_commands = f"""
+CREATE DATABASE IF NOT EXISTS `{db_database}`;
+CREATE USER IF NOT EXISTS '{db_username}'@'%' IDENTIFIED BY '{db_password}';
+GRANT ALL PRIVILEGES ON `{db_database}`.* TO '{db_username}'@'%';
+FLUSH PRIVILEGES;
+"""
 
-# Connect to MySQL server (not to a specific database)
-conn = mysql.connector.connect(
-    host=db_host,
-    port=db_port,
-    user=db_username,
-    password=db_password
-)
-cursor = conn.cursor()
+subprocess.run([
+    "mariadb",
+    "-u", "root",
+    "-e", mysql_commands
+], check=True)
 
-# Create database
-cursor.execute(f"CREATE DATABASE IF NOT EXISTS `{db_database}`;")
-print(f"Database '{db_database}' created or already exists.")
+# Update root password
 
-cursor.close()
-conn.close()
+mysql_commands = f"""
+ALTER USER 'root'@'localhost' IDENTIFIED BY '{db_password}';
+FLUSH PRIVILEGES;
+"""
+
+subprocess.run([
+"mariadb",
+"-u", "root",
+"-e", mysql_commands
+], check=True)
