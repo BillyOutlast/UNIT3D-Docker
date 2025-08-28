@@ -1,9 +1,14 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
+  unit3d:
+    image: unit3d:latest
+    container_name: unit3d
     env_file:
       - env
     ports:
-      - "8080:8080"
+      - "80:80"
+      - "443:443"
+      - "3306:3306"
+      - "6379:6379"
+    command: tail -f /dev/null
