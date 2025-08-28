@@ -35,11 +35,12 @@ A Dockerized setup for UNIT3D, an open-source private torrent tracker.
     ```
     Replace `your_secure_username` and `your_strong_password` with your own secure values.
 
-4. Create a directory for MySQL data persistence:
+4. Create a directory for MySQL and cache data persistence:
     ```bash
     mkdir mysql
+    mkdir home
     ```
-    This ensures your database data is stored outside the container and persists across restarts.
+    This ensures your database and cache data is stored outside the container and persists across restarts.
 
 5. Start the `unit3d-setup` service using Docker Compose:
     ```bash
