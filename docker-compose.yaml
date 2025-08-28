@@ -33,3 +33,13 @@ services:
     env_file:
       - .env
     entrypoint: /entrypoint.sh debug
+
+  unit3d-backup:
+    image: unit3d:latest
+    volumes:
+      - ./backup:/backup
+      - ./mysql:/var/lib/mysql:ro
+        - ./UNIT3D:/var/www/html:ro
+    env_file:
+      - .env
+    entrypoint: /entrypoint.sh backup-mysql
