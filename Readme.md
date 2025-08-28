@@ -35,12 +35,32 @@ A Dockerized setup for UNIT3D, an open-source private torrent tracker.
     ```
     Replace `your_secure_username` and `your_strong_password` with your own secure values.
 
-4. Build and start the containers:
+4. Create a directory for MySQL data persistence:
     ```bash
-    docker-compose up -d
+    mkdir mysql
     ```
+    This ensures your database data is stored outside the container and persists across restarts.
 
-4. Access UNIT3D at `http://localhost:8000`
+5. Start the `unit3d-setup` service using Docker Compose:
+    ```bash
+    docker-compose up unit3d-setup
+    ```
+    This will initialize the UNIT3D application and perform setup tasks.
+
+
+6. Run the UNIT3D service:
+    ```bash
+    docker-compose up unit3d
+    ```
+    This command will start the UNIT3D web application and its dependencies.
+
+7. Access the UNIT3D web interface:
+
+    Open your browser and navigate to [http://localhost:80](http://localhost:80).
+
+    Use the default login credentials:
+    - **Username:** UNIT3D
+    - **Password:** UNIT3D
 
 ## Configuration
 
