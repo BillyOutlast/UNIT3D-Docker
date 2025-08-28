@@ -8,7 +8,7 @@ services:
       - "6379:6379"
     restart: unless-stopped
     volumes:
-      - ./UNIT3D:/var/www/html
+      - ./UNIT3D:/var/www/html  
       - ./unit3d.conf:/etc/nginx/conf.d/unit3d.conf
     env_file:
       - .env
@@ -18,6 +18,9 @@ services:
     image: unit3d:latest
     volumes:
       - ./UNIT3D:/var/www/html
+      - ./unit3d.conf:/etc/nginx/conf.d/unit3d.conf
+      - ./mysql:/var/lib/mysql
+      - ./entrypoint.sh:/entrypoint.sh
     env_file:
       - .env
     entrypoint: /entrypoint.sh setup

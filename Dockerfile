@@ -42,11 +42,6 @@ RUN sed -i '/^;zend_extension=opcache/s/^;//' /etc/php/php.ini \
     && sed -i '/^;extension=pdo_mysql/s/^;//' /etc/php/php.ini \
     && sed -i '/^;extension=intl/s/^;//' /etc/php/php.ini
 
-# Add entrypoint script
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
 
 # Expose necessary ports
 EXPOSE 80 443 3306 6379
