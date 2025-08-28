@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   unit3d:
     image: unit3d:latest
@@ -11,6 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./UNIT3D:/var/www/html
+      - ./unit3d.conf:/etc/nginx/conf.d/unit3d.conf
     env_file:
       - .env
     entrypoint: /entrypoint.sh
