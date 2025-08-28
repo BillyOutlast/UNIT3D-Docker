@@ -49,15 +49,6 @@ RUN dnf -y install php-pear php-devel gcc make ImageMagick-devel \
     && echo "extension=redis.so" > /etc/php.d/40-redis.ini \
     && echo "extension=imagick.so" > /etc/php.d/40-imagick.ini
 
-# Install and enable dnf-automatic for automatic updates
-RUN dnf -y install dnf-automatic \
-    && systemctl enable dnf-automatic.timer
-
-
-
-# Configure dnf-automatic to run updates at midnight UTC
-RUN sed -i 's/^OnCalendar=.*/OnCalendar=*-*-* 00:00:00 UTC/' /usr/lib/systemd/system/dnf-automatic.timer
-
 
 # Set up MariaDB
 RUN mkdir -p /run/mysqld && chown mysql:mysql /run/mysqld
@@ -72,11 +63,6 @@ RUN sed -i '/^;extension=iconv/s/^;//' /etc/php.ini \
     && sed -i '/^;extension=intl/s/^;//' /etc/php.ini 
 
 
-# Install bun globally using npm
-RUN npm install -g bun || npm update -g bun 
-
-
-
 # Disable remote login for MariaDB (MySQL)
 RUN echo "[mysqld]\nskip-networking\nskip-bind-address" >> /etc/my.cnf.d/disable-remote.cnf
 
@@ -88,6 +74,7 @@ RUN useradd -r -s /sbin/nologin unit3d \
     && mkdir -p /var/www/html \
     && chown unit3d:unit3d /var/www/html
 
+RUN mkdir -p /run/php-fpm
 
 # Expose necessary ports
 EXPOSE 80 443 3306 6379

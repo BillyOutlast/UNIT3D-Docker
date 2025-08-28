@@ -1,6 +1,8 @@
 #!/bin/bash
 
 if [[ "$1" == "setup" ]]; then
+    echo "Updating DNF packages..."
+    sudo dnf -y update
     echo "Setting up UNIT3D..."
     sudo chown -R mysql:mysql /var/lib/mysql
     sudo chmod -R 750 /var/lib/mysql
@@ -12,7 +14,6 @@ if [[ "$1" == "setup" ]]; then
     echo "Setting correct permissions for MariaDB data directory..."
     su -s /bin/bash mysql -c "mysqld &"
     redis-server --daemonize yes
-    mkdir -p /run/php-fpm
     php-fpm &
 
     # Wait for MariaDB to be ready
@@ -24,7 +25,6 @@ if [[ "$1" == "setup" ]]; then
 
     sudo chown -R unit3d:unit3d /var/www/html /home/unit3d/
     su -s /bin/bash unit3d -c "/setup.sh"
-    tail -f /dev/null
 fi
 if [[ "$1" == "debug" ]]; then
     echo "Debug mode: keeping container running..."
@@ -47,21 +47,27 @@ if [[ "$1" == "backup-mysql" ]]; then
 fi
 
 if [[ -z "$1" ]]; then
-    echo "Starting PHP Artisan server..."
-    redis-server --daemonize yes
+    echo "Updating DNF packages..."
+    sudo dnf -y update
+    pecl channel-update pecl.php.net
+    pecl upgrade-all
+    echo "Starting MySQL..."
     sudo chown -R mysql:mysql /var/lib/mysql
     sudo chmod -R 750 /var/lib/mysql
     sudo chage -E -1 mysql
     # Ensure correct ownership for /var/www/html
     sudo chown -R unit3d:unit3d /var/www/html
-    su -s /bin/bash mysql -c "cd '/usr' ; /usr/bin/mariadbd-safe --datadir='/var/lib/mysql'"
+    su -s /bin/bash mysql -c "mysqld &"
     # Wait for MariaDB to be ready
     until mysqladmin ping -h "localhost" --silent; do
         echo "Waiting for MariaDB to be available..."
         sleep 2
     done
+    echo "Starting Redis..."
     redis-server --daemonize yes
+    echo "Starting PHP-FPM..."
     php-fpm &
+    echo "Starting PHP Artisan server..."
     su -s /bin/bash unit3d -c "/run.sh"
 
 fi
