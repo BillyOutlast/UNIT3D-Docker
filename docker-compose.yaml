@@ -21,6 +21,7 @@ services:
       - ./unit3d.conf:/etc/nginx/conf.d/unit3d.conf
       - ./mysql:/var/lib/mysql
       - ./entrypoint.sh:/entrypoint.sh
+      - ./database-setup.py:/database-setup.py
     env_file:
       - .env
     entrypoint: /entrypoint.sh setup

@@ -14,6 +14,8 @@ RUN pacman -Sy --noconfirm archlinux-keyring \
     mariadb \
     valkey \
     nginx \
+    python3 \
+    python-mysql-connector \
     php \
     php-fpm \
     php-gd \
