@@ -33,6 +33,7 @@ if [[ "$1" == "setup" ]]; then
     bun pm trust --all
     bun install
     bun run build
+
     php artisan set:all_cache
     php artisan queue:restart
 fi
